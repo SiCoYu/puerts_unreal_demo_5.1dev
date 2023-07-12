@@ -2,6 +2,7 @@
 
 
 #include "TsGameInstance.h"
+#include "XContext.h"
 
 void UTsGameInstance::Init()
 {
@@ -16,7 +17,11 @@ void UTsGameInstance::OnStart()
     //GameScript->WaitDebugger();
     TArray<TPair<FString, UObject*>> Arguments;
     Arguments.Add(TPair<FString, UObject*>(TEXT("GameInstance"), this));
+    UXContext* RuntimeContext = NewObject<UXContext>();
+    Arguments.Add(TPair<FString, UObject*>{TEXT("Context"), RuntimeContext });
     GameScript->Start("QuickStart", Arguments);
+    
+    RuntimeContext->Mixin();
 }
 
 void UTsGameInstance::Shutdown()

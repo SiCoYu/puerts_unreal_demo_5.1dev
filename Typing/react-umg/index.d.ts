@@ -53,8 +53,8 @@ declare module "react-umg" {
     }
 
     interface HorizontalBoxSlot extends PanelSlot {
-        Padding?: RecursivePartial<UE.Margin>;
         Size?: RecursivePartial<UE.SlateChildSize>;
+        Padding?: RecursivePartial<UE.Margin>;
         HorizontalAlignment?: UE.EHorizontalAlignment;
         VerticalAlignment?: UE.EVerticalAlignment;
     }
@@ -91,6 +91,13 @@ declare module "react-umg" {
         VerticalAlignment?: UE.EVerticalAlignment;
     }
 
+    interface StackBoxSlot extends PanelSlot {
+        Padding?: RecursivePartial<UE.Margin>;
+        Size?: RecursivePartial<UE.SlateChildSize>;
+        HorizontalAlignment?: UE.EHorizontalAlignment;
+        VerticalAlignment?: UE.EVerticalAlignment;
+    }
+
     interface UniformGridSlot extends PanelSlot {
         HorizontalAlignment?: UE.EHorizontalAlignment;
         VerticalAlignment?: UE.EVerticalAlignment;
@@ -119,10 +126,11 @@ declare module "react-umg" {
 
     interface WrapBoxSlot extends PanelSlot {
         Padding?: RecursivePartial<UE.Margin>;
-        bFillEmptySpace?: boolean;
         FillSpanWhenLessThan?: number;
         HorizontalAlignment?: UE.EHorizontalAlignment;
         VerticalAlignment?: UE.EVerticalAlignment;
+        bFillEmptySpace?: boolean;
+        bForceNewLine?: boolean;
     }
 
     export interface Props {
@@ -136,6 +144,7 @@ declare module "react-umg" {
         VisibilityDelegate?: () => UE.ESlateVisibility;
         RenderTransform?: RecursivePartial<UE.WidgetTransform>;
         RenderTransformPivot?: RecursivePartial<UE.Vector2D>;
+        FlowDirectionPreference?: UE.EFlowDirectionPreference;
         bIsVariable?: boolean;
         bCreatedByConstructionScript?: boolean;
         bIsEnabled?: boolean;
@@ -156,7 +165,6 @@ declare module "react-umg" {
         Clipping?: UE.EWidgetClipping;
         Visibility?: UE.ESlateVisibility;
         RenderOpacity?: number;
-        FlowDirectionPreference?: UE.EFlowDirectionPreference;
         DesignerFlags?: number;
         DisplayLabel?: string;
         CategoryName?: string;
@@ -171,18 +179,17 @@ declare module "react-umg" {
         ColorAndOpacityDelegate?: () => UE.LinearColor;
         ForegroundColor?: RecursivePartial<UE.SlateColor>;
         ForegroundColorDelegate?: () => UE.SlateColor;
+        OnVisibilityChanged?: (InVisibility: UE.ESlateVisibility) => void;
         Padding?: RecursivePartial<UE.Margin>;
         NamedSlotBindings?: TArray<UE.NamedSlotBinding>;
         DesignTimeSize?: RecursivePartial<UE.Vector2D>;
         DesignSizeMode?: UE.EDesignPreviewSizeMode;
         PaletteCategory?: string;
         Priority?: number;
-        bSupportsKeyboardFocus?: boolean;
         bIsFocusable?: boolean;
         bStopAction?: boolean;
         bHasScriptImplementedTick?: boolean;
         bHasScriptImplementedPaint?: boolean;
-        bCookedWidgetTree?: boolean;
         TickFrequency?: UE.EWidgetTickFrequency;
         AnimationCallbacks?: TArray<UE.AnimationEventBinding>;
     }
@@ -196,6 +203,38 @@ declare module "react-umg" {
 
     class VREditorBaseUserWidget extends React.Component<VREditorBaseUserWidgetProps> {
         nativePtr: UE.VREditorBaseUserWidget;
+    }
+
+    interface ListViewBaseProps extends WidgetProps {
+        WheelScrollMultiplier?: number;
+        bEnableScrollAnimation?: boolean;
+        AllowOverscroll?: boolean;
+        bEnableRightClickScrolling?: boolean;
+        bEnableFixedLineOffset?: boolean;
+        FixedLineScrollOffset?: number;
+        bAllowDragging?: boolean;
+        NumDesignerPreviewEntries?: number;
+        EntryWidgetPool?: RecursivePartial<UE.UserWidgetPool>;
+    }
+
+    class ListViewBase extends React.Component<ListViewBaseProps> {
+        nativePtr: UE.ListViewBase;
+    }
+
+    interface ListViewProps extends ListViewBaseProps {
+        WidgetStyle?: RecursivePartial<UE.TableViewStyle>;
+        ScrollBarStyle?: RecursivePartial<UE.ScrollBarStyle>;
+        Orientation?: UE.EOrientation;
+        SelectionMode?: UE.ESelectionMode;
+        ConsumeMouseWheel?: UE.EConsumeMouseWheel;
+        bClearSelectionOnClick?: boolean;
+        bIsFocusable?: boolean;
+        EntrySpacing?: number;
+        bReturnFocusToSelection?: boolean;
+    }
+
+    class ListView extends React.Component<ListViewProps> {
+        nativePtr: UE.ListView;
     }
 
     interface PanelWidgetProps extends WidgetProps {
@@ -220,6 +259,7 @@ declare module "react-umg" {
         BlurStrength?: number;
         bOverrideAutoRadiusCalculation?: boolean;
         BlurRadius?: number;
+        CornerRadius?: RecursivePartial<UE.Vector4>;
         LowQualityFallbackBrush?: RecursivePartial<UE.SlateBrush>;
     }
 
@@ -281,8 +321,9 @@ declare module "react-umg" {
         CheckedStateDelegate?: () => UE.ECheckBoxState;
         WidgetStyle?: RecursivePartial<UE.CheckBoxStyle>;
         HorizontalAlignment?: UE.EHorizontalAlignment;
-        Padding?: RecursivePartial<UE.Margin>;
-        BorderBackgroundColor?: RecursivePartial<UE.SlateColor>;
+        ClickMethod?: UE.EButtonClickMethod;
+        TouchMethod?: UE.EButtonTouchMethod;
+        PressMethod?: UE.EButtonPressMethod;
         IsFocusable?: boolean;
         OnCheckStateChanged?: (bIsChecked: boolean) => void;
     }
@@ -309,6 +350,25 @@ declare module "react-umg" {
 
     class ComboBox extends React.Component<ComboBoxProps> {
         nativePtr: UE.ComboBox;
+    }
+
+    interface ComboBoxKeyProps extends WidgetProps {
+        Options?: TArray<string>;
+        SelectedOption?: string;
+        WidgetStyle?: RecursivePartial<UE.ComboBoxStyle>;
+        ItemStyle?: RecursivePartial<UE.TableRowStyle>;
+        ForegroundColor?: RecursivePartial<UE.SlateColor>;
+        ContentPadding?: RecursivePartial<UE.Margin>;
+        MaxListHeight?: number;
+        bHasDownArrow?: boolean;
+        bEnableGamepadNavigationMode?: boolean;
+        bIsFocusable?: boolean;
+        OnSelectionChanged?: (SelectedItem: string, SelectionType: UE.ESelectInfo) => void;
+        OnOpening?: () => void;
+    }
+
+    class ComboBoxKey extends React.Component<ComboBoxKeyProps> {
+        nativePtr: UE.ComboBoxKey;
     }
 
     interface ComboBoxStringProps extends WidgetProps {
@@ -339,6 +399,7 @@ declare module "react-umg" {
         EntryHorizontalAlignment?: UE.EHorizontalAlignment;
         EntryVerticalAlignment?: UE.EVerticalAlignment;
         MaxElementSize?: number;
+        RadialBoxSettings?: RecursivePartial<UE.RadialBoxSettings>;
         EntryWidgetPool?: RecursivePartial<UE.UserWidgetPool>;
     }
 
@@ -360,8 +421,6 @@ declare module "react-umg" {
         HintText?: string;
         HintTextDelegate?: () => string;
         WidgetStyle?: RecursivePartial<UE.EditableTextStyle>;
-        Font?: RecursivePartial<UE.SlateFontInfo>;
-        ColorAndOpacity?: RecursivePartial<UE.SlateColor>;
         IsReadOnly?: boolean;
         IsPassword?: boolean;
         MinimumDesiredWidth?: number;
@@ -373,8 +432,10 @@ declare module "react-umg" {
         AllowContextMenu?: boolean;
         KeyboardType?: UE.EVirtualKeyboardType;
         VirtualKeyboardOptions?: RecursivePartial<UE.VirtualKeyboardOptions>;
+        VirtualKeyboardTrigger?: UE.EVirtualKeyboardTrigger;
         VirtualKeyboardDismissAction?: UE.EVirtualKeyboardDismissAction;
         Justification?: UE.ETextJustify;
+        OverflowPolicy?: UE.ETextOverflowPolicy;
         ShapedTextOptions?: RecursivePartial<UE.ShapedTextOptions>;
         OnTextChanged?: (Text: string) => void;
         OnTextCommitted?: (Text: string, CommitMethod: UE.ETextCommit) => void;
@@ -390,14 +451,9 @@ declare module "react-umg" {
         WidgetStyle?: RecursivePartial<UE.EditableTextBoxStyle>;
         HintText?: string;
         HintTextDelegate?: () => string;
-        Font?: RecursivePartial<UE.SlateFontInfo>;
-        ForegroundColor?: RecursivePartial<UE.LinearColor>;
-        BackgroundColor?: RecursivePartial<UE.LinearColor>;
-        ReadOnlyForegroundColor?: RecursivePartial<UE.LinearColor>;
         IsReadOnly?: boolean;
         IsPassword?: boolean;
         MinimumDesiredWidth?: number;
-        Padding?: RecursivePartial<UE.Margin>;
         IsCaretMovedWhenGainFocus?: boolean;
         SelectAllTextWhenFocused?: boolean;
         RevertTextOnEscape?: boolean;
@@ -406,11 +462,14 @@ declare module "react-umg" {
         AllowContextMenu?: boolean;
         KeyboardType?: UE.EVirtualKeyboardType;
         VirtualKeyboardOptions?: RecursivePartial<UE.VirtualKeyboardOptions>;
+        VirtualKeyboardTrigger?: UE.EVirtualKeyboardTrigger;
         VirtualKeyboardDismissAction?: UE.EVirtualKeyboardDismissAction;
         Justification?: UE.ETextJustify;
+        OverflowPolicy?: UE.ETextOverflowPolicy;
         ShapedTextOptions?: RecursivePartial<UE.ShapedTextOptions>;
         OnTextChanged?: (Text: string) => void;
         OnTextCommitted?: (Text: string, CommitMethod: UE.ETextCommit) => void;
+        bIsFontDeprecationDone?: boolean;
     }
 
     class EditableTextBox extends React.Component<EditableTextBoxProps> {
@@ -464,9 +523,7 @@ declare module "react-umg" {
         WidgetStyle?: RecursivePartial<UE.ButtonStyle>;
         TextStyle?: RecursivePartial<UE.TextBlockStyle>;
         SelectedKey?: RecursivePartial<UE.InputChord>;
-        Font?: RecursivePartial<UE.SlateFontInfo>;
         Margin?: RecursivePartial<UE.Margin>;
-        ColorAndOpacity?: RecursivePartial<UE.LinearColor>;
         KeySelectionText?: string;
         NoKeySpecifiedText?: string;
         bAllowModifierKeys?: boolean;
@@ -487,33 +544,6 @@ declare module "react-umg" {
 
     class InvalidationBox extends React.Component<InvalidationBoxProps> {
         nativePtr: UE.InvalidationBox;
-    }
-
-    interface ListViewBaseProps extends WidgetProps {
-        WheelScrollMultiplier?: number;
-        bEnableScrollAnimation?: boolean;
-        bEnableFixedLineOffset?: boolean;
-        FixedLineScrollOffset?: number;
-        NumDesignerPreviewEntries?: number;
-        EntryWidgetPool?: RecursivePartial<UE.UserWidgetPool>;
-    }
-
-    class ListViewBase extends React.Component<ListViewBaseProps> {
-        nativePtr: UE.ListViewBase;
-    }
-
-    interface ListViewProps extends ListViewBaseProps {
-        Orientation?: UE.EOrientation;
-        SelectionMode?: UE.ESelectionMode;
-        ConsumeMouseWheel?: UE.EConsumeMouseWheel;
-        bClearSelectionOnClick?: boolean;
-        bIsFocusable?: boolean;
-        EntrySpacing?: number;
-        bReturnFocusToSelection?: boolean;
-    }
-
-    class ListView extends React.Component<ListViewProps> {
-        nativePtr: UE.ListView;
     }
 
     interface MenuAnchorProps extends ContentWidgetProps {
@@ -548,7 +578,6 @@ declare module "react-umg" {
         HintTextDelegate?: () => string;
         WidgetStyle?: RecursivePartial<UE.TextBlockStyle>;
         bIsReadOnly?: boolean;
-        Font?: RecursivePartial<UE.SlateFontInfo>;
         SelectAllTextWhenFocused?: boolean;
         ClearTextSelectionOnFocusLoss?: boolean;
         RevertTextOnEscape?: boolean;
@@ -574,12 +603,9 @@ declare module "react-umg" {
         AllowContextMenu?: boolean;
         VirtualKeyboardOptions?: RecursivePartial<UE.VirtualKeyboardOptions>;
         VirtualKeyboardDismissAction?: UE.EVirtualKeyboardDismissAction;
-        Font?: RecursivePartial<UE.SlateFontInfo>;
-        ForegroundColor?: RecursivePartial<UE.LinearColor>;
-        BackgroundColor?: RecursivePartial<UE.LinearColor>;
-        ReadOnlyForegroundColor?: RecursivePartial<UE.LinearColor>;
         OnTextChanged?: (Text: string) => void;
         OnTextCommitted?: (Text: string, CommitMethod: UE.ETextCommit) => void;
+        bIsFontDeprecationDone?: boolean;
     }
 
     class MultiLineEditableTextBox extends React.Component<MultiLineEditableTextBoxProps> {
@@ -587,6 +613,7 @@ declare module "react-umg" {
     }
 
     interface NamedSlotProps extends ContentWidgetProps {
+        bExposeOnInstanceOnly?: boolean;
     }
 
     class NamedSlot extends React.Component<NamedSlotProps> {
@@ -611,6 +638,7 @@ declare module "react-umg" {
         WidgetStyle?: RecursivePartial<UE.ProgressBarStyle>;
         Percent?: number;
         BarFillType?: UE.EProgressBarFillType;
+        BarFillStyle?: UE.EProgressBarFillStyle;
         bIsMarquee?: boolean;
         BorderPadding?: RecursivePartial<UE.Vector2D>;
         PercentDelegate?: () => number;
@@ -623,6 +651,7 @@ declare module "react-umg" {
     }
 
     interface RetainerBoxProps extends ContentWidgetProps {
+        bRetainRender?: boolean;
         RenderOnInvalidation?: boolean;
         RenderOnPhase?: boolean;
         Phase?: number;
@@ -639,6 +668,9 @@ declare module "react-umg" {
         bOverrideDefaultStyle?: boolean;
         DefaultTextStyleOverride?: RecursivePartial<UE.TextBlockStyle>;
         MinDesiredWidth?: number;
+        TextTransformPolicy?: UE.ETextTransformPolicy;
+        TextOverflowPolicy?: UE.ETextOverflowPolicy;
+        DefaultTextStyle?: RecursivePartial<UE.TextBlockStyle>;
     }
 
     class RichTextBlock extends React.Component<RichTextBlockProps> {
@@ -691,9 +723,12 @@ declare module "react-umg" {
         AlwaysShowScrollbar?: boolean;
         AlwaysShowScrollbarTrack?: boolean;
         AllowOverscroll?: boolean;
+        BackPadScrolling?: boolean;
+        FrontPadScrolling?: boolean;
         bAnimateWheelScrolling?: boolean;
         NavigationDestination?: UE.EDescendantScrollDestination;
         NavigationScrollPadding?: number;
+        ScrollWhenFocusChanges?: UE.EScrollWhenFocusChanges;
         bAllowRightClickDragScrolling?: boolean;
         WheelScrollMultiplier?: number;
         OnUserScrolled?: (CurrentOffset: number) => void;
@@ -764,11 +799,16 @@ declare module "react-umg" {
         Value?: number;
         ValueDelegate?: () => number;
         WidgetStyle?: RecursivePartial<UE.SpinBoxStyle>;
+        MinFractionalDigits?: number;
+        MaxFractionalDigits?: number;
+        bAlwaysUsesDeltaSnap?: boolean;
+        bEnableSlider?: boolean;
         Delta?: number;
         SliderExponent?: number;
         Font?: RecursivePartial<UE.SlateFontInfo>;
         Justification?: UE.ETextJustify;
         MinDesiredWidth?: number;
+        KeyboardType?: UE.EVirtualKeyboardType;
         ClearKeyboardFocusOnCommit?: boolean;
         SelectAllTextOnCommit?: boolean;
         ForegroundColor?: RecursivePartial<UE.SlateColor>;
@@ -790,6 +830,14 @@ declare module "react-umg" {
         nativePtr: UE.SpinBox;
     }
 
+    interface StackBoxProps extends PanelWidgetProps {
+        Orientation?: UE.EOrientation;
+    }
+
+    class StackBox extends React.Component<StackBoxProps> {
+        nativePtr: UE.StackBox;
+    }
+
     interface TextBlockProps extends TextLayoutWidgetProps {
         Text?: string;
         TextDelegate?: () => string;
@@ -802,7 +850,8 @@ declare module "react-umg" {
         ShadowColorAndOpacityDelegate?: () => UE.LinearColor;
         MinDesiredWidth?: number;
         bWrapWithInvalidationPanel?: boolean;
-        bAutoWrapText?: boolean;
+        TextTransformPolicy?: UE.ETextTransformPolicy;
+        TextOverflowPolicy?: UE.ETextOverflowPolicy;
         bSimpleTextMode?: boolean;
     }
 
@@ -884,8 +933,10 @@ declare module "react-umg" {
 
     interface WrapBoxProps extends PanelWidgetProps {
         InnerSlotPadding?: RecursivePartial<UE.Vector2D>;
-        WrapWidth?: number;
-        bExplicitWrapWidth?: boolean;
+        WrapSize?: number;
+        bExplicitWrapSize?: boolean;
+        HorizontalAlignment?: UE.EHorizontalAlignment;
+        Orientation?: UE.EOrientation;
     }
 
     class WrapBox extends React.Component<WrapBoxProps> {
@@ -922,7 +973,7 @@ declare module "react-umg" {
         ViewIdentifier?: string;
         CategoriesToShow?: TArray<string>;
         PropertiesToShow?: TArray<string>;
-        bShowOnlyWhitelisted?: boolean;
+        bShowOnlyAllowed?: boolean;
     }
 
     class DetailsView extends React.Component<DetailsViewProps> {
@@ -946,6 +997,197 @@ declare module "react-umg" {
 
     class EditorUtilityWidget extends React.Component<EditorUtilityWidgetProps> {
         nativePtr: UE.EditorUtilityWidget;
+    }
+
+    interface TakeRecorderOverlayWidgetProps extends UserWidgetProps {
+    }
+
+    class TakeRecorderOverlayWidget extends React.Component<TakeRecorderOverlayWidgetProps> {
+        nativePtr: UE.TakeRecorderOverlayWidget;
+    }
+
+    interface RadialSliderProps extends WidgetProps {
+        Value?: number;
+        ValueDelegate?: () => number;
+        bUseCustomDefaultValue?: boolean;
+        CustomDefaultValue?: number;
+        SliderRange?: RecursivePartial<UE.RuntimeFloatCurve>;
+        ValueTags?: TArray<number>;
+        SliderHandleStartAngle?: number;
+        SliderHandleEndAngle?: number;
+        AngularOffset?: number;
+        HandStartEndRatio?: RecursivePartial<UE.Vector2D>;
+        WidgetStyle?: RecursivePartial<UE.SliderStyle>;
+        SliderBarColor?: RecursivePartial<UE.LinearColor>;
+        SliderProgressColor?: RecursivePartial<UE.LinearColor>;
+        SliderHandleColor?: RecursivePartial<UE.LinearColor>;
+        CenterBackgroundColor?: RecursivePartial<UE.LinearColor>;
+        Locked?: boolean;
+        MouseUsesStep?: boolean;
+        RequiresControllerLock?: boolean;
+        StepSize?: number;
+        IsFocusable?: boolean;
+        UseVerticalDrag?: boolean;
+        ShowSliderHandle?: boolean;
+        ShowSliderHand?: boolean;
+        OnMouseCaptureBegin?: () => void;
+        OnMouseCaptureEnd?: () => void;
+        OnControllerCaptureBegin?: () => void;
+        OnControllerCaptureEnd?: () => void;
+        OnValueChanged?: (Value: number) => void;
+    }
+
+    class RadialSlider extends React.Component<RadialSliderProps> {
+        nativePtr: UE.RadialSlider;
+    }
+
+    interface AudioMeterProps extends WidgetProps {
+        MeterChannelInfo?: TArray<UE.MeterChannelInfo>;
+        MeterChannelInfoDelegate?: () => TArray<UE.MeterChannelInfo>;
+        WidgetStyle?: RecursivePartial<UE.AudioMeterStyle>;
+        Orientation?: UE.EOrientation;
+        BackgroundColor?: RecursivePartial<UE.LinearColor>;
+        MeterBackgroundColor?: RecursivePartial<UE.LinearColor>;
+        MeterValueColor?: RecursivePartial<UE.LinearColor>;
+        MeterPeakColor?: RecursivePartial<UE.LinearColor>;
+        MeterClippingColor?: RecursivePartial<UE.LinearColor>;
+        MeterScaleColor?: RecursivePartial<UE.LinearColor>;
+        MeterScaleLabelColor?: RecursivePartial<UE.LinearColor>;
+    }
+
+    class AudioMeter extends React.Component<AudioMeterProps> {
+        nativePtr: UE.AudioMeter;
+    }
+
+    interface AudioRadialSliderProps extends WidgetProps {
+        Value?: number;
+        ValueDelegate?: () => number;
+        WidgetLayout?: UE.EAudioRadialSliderLayout;
+        CenterBackgroundColor?: RecursivePartial<UE.LinearColor>;
+        SliderProgressColor?: RecursivePartial<UE.LinearColor>;
+        SliderBarColor?: RecursivePartial<UE.LinearColor>;
+        HandStartEndRatio?: RecursivePartial<UE.Vector2D>;
+        UnitsText?: string;
+        TextLabelBackgroundColor?: RecursivePartial<UE.LinearColor>;
+        ShowLabelOnlyOnHover?: boolean;
+        ShowUnitsText?: boolean;
+        IsUnitsTextReadOnly?: boolean;
+        IsValueTextReadOnly?: boolean;
+        SliderThickness?: number;
+        OutputRange?: RecursivePartial<UE.Vector2D>;
+        OnValueChanged?: (Value: number) => void;
+    }
+
+    class AudioRadialSlider extends React.Component<AudioRadialSliderProps> {
+        nativePtr: UE.AudioRadialSlider;
+    }
+
+    interface AudioVolumeRadialSliderProps extends AudioRadialSliderProps {
+    }
+
+    class AudioVolumeRadialSlider extends React.Component<AudioVolumeRadialSliderProps> {
+        nativePtr: UE.AudioVolumeRadialSlider;
+    }
+
+    interface AudioFrequencyRadialSliderProps extends AudioRadialSliderProps {
+    }
+
+    class AudioFrequencyRadialSlider extends React.Component<AudioFrequencyRadialSliderProps> {
+        nativePtr: UE.AudioFrequencyRadialSlider;
+    }
+
+    interface AudioSliderBaseProps extends WidgetProps {
+        Value?: number;
+        UnitsText?: string;
+        TextLabelBackgroundColor?: RecursivePartial<UE.LinearColor>;
+        TextLabelBackgroundColorDelegate?: () => UE.LinearColor;
+        ShowLabelOnlyOnHover?: boolean;
+        ShowUnitsText?: boolean;
+        IsUnitsTextReadOnly?: boolean;
+        IsValueTextReadOnly?: boolean;
+        ValueDelegate?: () => number;
+        SliderBackgroundColor?: RecursivePartial<UE.LinearColor>;
+        SliderBackgroundColorDelegate?: () => UE.LinearColor;
+        SliderBarColor?: RecursivePartial<UE.LinearColor>;
+        SliderBarColorDelegate?: () => UE.LinearColor;
+        SliderThumbColor?: RecursivePartial<UE.LinearColor>;
+        SliderThumbColorDelegate?: () => UE.LinearColor;
+        WidgetBackgroundColor?: RecursivePartial<UE.LinearColor>;
+        WidgetBackgroundColorDelegate?: () => UE.LinearColor;
+        Orientation?: UE.EOrientation;
+        OnValueChanged?: (Value: number) => void;
+    }
+
+    class AudioSliderBase extends React.Component<AudioSliderBaseProps> {
+        nativePtr: UE.AudioSliderBase;
+    }
+
+    interface AudioSliderProps extends AudioSliderBaseProps {
+    }
+
+    class AudioSlider extends React.Component<AudioSliderProps> {
+        nativePtr: UE.AudioSlider;
+    }
+
+    interface AudioVolumeSliderProps extends AudioSliderProps {
+    }
+
+    class AudioVolumeSlider extends React.Component<AudioVolumeSliderProps> {
+        nativePtr: UE.AudioVolumeSlider;
+    }
+
+    interface AudioFrequencySliderProps extends AudioSliderBaseProps {
+        OutputRange?: RecursivePartial<UE.Vector2D>;
+    }
+
+    class AudioFrequencySlider extends React.Component<AudioFrequencySliderProps> {
+        nativePtr: UE.AudioFrequencySlider;
+    }
+
+    interface Synth2DSliderProps extends WidgetProps {
+        ValueX?: number;
+        ValueY?: number;
+        ValueXDelegate?: () => number;
+        ValueYDelegate?: () => number;
+        WidgetStyle?: RecursivePartial<UE.Synth2DSliderStyle>;
+        SliderHandleColor?: RecursivePartial<UE.LinearColor>;
+        IndentHandle?: boolean;
+        Locked?: boolean;
+        StepSize?: number;
+        IsFocusable?: boolean;
+        OnMouseCaptureBegin?: () => void;
+        OnMouseCaptureEnd?: () => void;
+        OnControllerCaptureBegin?: () => void;
+        OnControllerCaptureEnd?: () => void;
+        OnValueChangedX?: (Value: number) => void;
+        OnValueChangedY?: (Value: number) => void;
+    }
+
+    class Synth2DSlider extends React.Component<Synth2DSliderProps> {
+        nativePtr: UE.Synth2DSlider;
+    }
+
+    interface SynthKnobProps extends WidgetProps {
+        Value?: number;
+        StepSize?: number;
+        MouseSpeed?: number;
+        MouseFineTuneSpeed?: number;
+        ShowTooltipInfo?: boolean;
+        ParameterName?: string;
+        ParameterUnits?: string;
+        ValueDelegate?: () => number;
+        WidgetStyle?: RecursivePartial<UE.SynthKnobStyle>;
+        Locked?: boolean;
+        IsFocusable?: boolean;
+        OnMouseCaptureBegin?: () => void;
+        OnMouseCaptureEnd?: () => void;
+        OnControllerCaptureBegin?: () => void;
+        OnControllerCaptureEnd?: () => void;
+        OnValueChanged?: (Value: number) => void;
+    }
+
+    class SynthKnob extends React.Component<SynthKnobProps> {
+        nativePtr: UE.SynthKnob;
     }
 
     interface ReactWidgetProps extends UserWidgetProps {

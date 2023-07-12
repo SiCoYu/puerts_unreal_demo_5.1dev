@@ -129,6 +129,14 @@ UE.GameplayStatics.FinishSpawningActor(actor, undefined);
 console.log(actor.GetName());
 console.log(actor.K2_GetActorLocation().ToString());
 
+let xContext = (argv.getByName("Context") as UE.XContext);
+function _Mixin(ParentClass: UE.Class, ModulePath: string, ObjectTakeByNative: boolean, Inherit: boolean, NoMixinedWarning: boolean, ReMixed: boolean) : UE.Class {
+    console.log("[CPP2TS]================================Execute Event");
+    return null;
+}
+xContext.ScriptMixInHandle.Bind(_Mixin)
+console.log("[CPP2TS]================================Bind Event");
+
 //蓝图加载
 //UE.Class.Load方式
 //let bpClass = UE.Class.Load('/Game/StarterContent/TestBlueprint.TestBlueprint_C')

@@ -112,6 +112,13 @@ let actor = UE.GameplayStatics.BeginDeferredActorSpawnFromClass(gameInstance, UE
 UE.GameplayStatics.FinishSpawningActor(actor, undefined);
 console.log(actor.GetName());
 console.log(actor.K2_GetActorLocation().ToString());
+let xContext = puerts_1.argv.getByName("Context");
+function _Mixin(ParentClass, ModulePath, ObjectTakeByNative, Inherit, NoMixinedWarning, ReMixed) {
+    console.log("[CPP2TS]================================Execute Event");
+    return null;
+}
+xContext.ScriptMixInHandle.Bind(_Mixin);
+console.log("[CPP2TS]================================Bind Event");
 //蓝图加载
 //UE.Class.Load方式
 //let bpClass = UE.Class.Load('/Game/StarterContent/TestBlueprint.TestBlueprint_C')
