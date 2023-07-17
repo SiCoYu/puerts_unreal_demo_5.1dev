@@ -9,3 +9,7 @@ Cooked
 Crashes
 Logs
 Saved
+/Plugins/Puerts/Source/CSharpParamDefaultValueMetas/obj
+/*.sln
+/.vsconfig
+/Plugins/Puerts/ThirdParty/v8
