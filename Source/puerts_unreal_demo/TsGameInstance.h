@@ -23,7 +23,12 @@ public:
     virtual void OnStart() override;
 
     virtual void Shutdown() override;
-	
+    UFUNCTION(BlueprintCallable)
+    void MixinBP(AActor* Target);
+
+	UFUNCTION(BlueprintCallable)
+	void MixinBPClass(UClass* TargetClass, FString TSName, bool SpawnActorInTS);
 private:
     TSharedPtr<puerts::FJsEnv> GameScript;
+    class UXContext* RuntimeContext;
 };

@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const UE = require("ue");
 const puerts_1 = require("puerts");
+const TSRegister_1 = require("./Game/TSRegister");
+const TSStoryNPC_1 = require("./Game/TSStoryNPC");
 let obj = new UE.MainObject();
 //调试器通过websocket发送断点信息，可能断点生效前脚本已经执行完备，可以通过debugger语句来主动触发断点
 //debugger;
@@ -112,13 +114,27 @@ let actor = UE.GameplayStatics.BeginDeferredActorSpawnFromClass(gameInstance, UE
 UE.GameplayStatics.FinishSpawningActor(actor, undefined);
 console.log(actor.GetName());
 console.log(actor.K2_GetActorLocation().ToString());
+//TSRegister.Register<TSActorBase>("TSActor", typeof TSActor);
 let xContext = puerts_1.argv.getByName("Context");
-function _Mixin(ParentClass, ModulePath, ObjectTakeByNative, Inherit, NoMixinedWarning, ReMixed) {
-    console.log("[CPP2TS]================================Execute Event");
-    return null;
+function _Mixin(ParentClass, ModulePath, ObjectTakeByNative, Inherit, NoMixinedWarning, SpawnInTS) {
+    let tsObj = TSRegister_1.TSRegister.GetTSObject("TSStoryNPC");
+    const toJsClass = puerts_1.blueprint.tojs(ParentClass);
+    let config = {};
+    let mixinClass = puerts_1.blueprint.mixin(toJsClass, TSStoryNPC_1.TSStoryNPC, config);
+    if (mixinClass && SpawnInTS) {
+        console.log("[CPP2TS] Spawn Actor From TS = ", mixinClass.name);
+        let transform = new UE.Transform(new UE.Rotator(0, 0, 0), new UE.Vector(0, 0, 0), new UE.Vector(1, 1, 1));
+        let gameInstance = puerts_1.argv.getByName("GameInstance");
+        let tsStoryNPC = UE.GameplayStatics.BeginDeferredActorSpawnFromClass(gameInstance, mixinClass.StaticClass(), undefined, UE.ESpawnActorCollisionHandlingMethod.Undefined);
+        UE.GameplayStatics.FinishSpawningActor(tsStoryNPC, undefined);
+        if (tsStoryNPC) {
+            tsStoryNPC.SetActorHiddenInGame(false);
+            tsStoryNPC.OnCreate(12345);
+        }
+    }
+    return mixinClass.StaticClass();
 }
 xContext.ScriptMixInHandle.Bind(_Mixin);
-console.log("[CPP2TS]================================Bind Event");
 //蓝图加载
 //UE.Class.Load方式
 //let bpClass = UE.Class.Load('/Game/StarterContent/TestBlueprint.TestBlueprint_C')

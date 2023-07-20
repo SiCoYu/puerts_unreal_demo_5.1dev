@@ -1006,6 +1006,52 @@ declare module "react-umg" {
         nativePtr: UE.TakeRecorderOverlayWidget;
     }
 
+    interface Synth2DSliderProps extends WidgetProps {
+        ValueX?: number;
+        ValueY?: number;
+        ValueXDelegate?: () => number;
+        ValueYDelegate?: () => number;
+        WidgetStyle?: RecursivePartial<UE.Synth2DSliderStyle>;
+        SliderHandleColor?: RecursivePartial<UE.LinearColor>;
+        IndentHandle?: boolean;
+        Locked?: boolean;
+        StepSize?: number;
+        IsFocusable?: boolean;
+        OnMouseCaptureBegin?: () => void;
+        OnMouseCaptureEnd?: () => void;
+        OnControllerCaptureBegin?: () => void;
+        OnControllerCaptureEnd?: () => void;
+        OnValueChangedX?: (Value: number) => void;
+        OnValueChangedY?: (Value: number) => void;
+    }
+
+    class Synth2DSlider extends React.Component<Synth2DSliderProps> {
+        nativePtr: UE.Synth2DSlider;
+    }
+
+    interface SynthKnobProps extends WidgetProps {
+        Value?: number;
+        StepSize?: number;
+        MouseSpeed?: number;
+        MouseFineTuneSpeed?: number;
+        ShowTooltipInfo?: boolean;
+        ParameterName?: string;
+        ParameterUnits?: string;
+        ValueDelegate?: () => number;
+        WidgetStyle?: RecursivePartial<UE.SynthKnobStyle>;
+        Locked?: boolean;
+        IsFocusable?: boolean;
+        OnMouseCaptureBegin?: () => void;
+        OnMouseCaptureEnd?: () => void;
+        OnControllerCaptureBegin?: () => void;
+        OnControllerCaptureEnd?: () => void;
+        OnValueChanged?: (Value: number) => void;
+    }
+
+    class SynthKnob extends React.Component<SynthKnobProps> {
+        nativePtr: UE.SynthKnob;
+    }
+
     interface RadialSliderProps extends WidgetProps {
         Value?: number;
         ValueDelegate?: () => number;
@@ -1142,52 +1188,6 @@ declare module "react-umg" {
 
     class AudioFrequencySlider extends React.Component<AudioFrequencySliderProps> {
         nativePtr: UE.AudioFrequencySlider;
-    }
-
-    interface Synth2DSliderProps extends WidgetProps {
-        ValueX?: number;
-        ValueY?: number;
-        ValueXDelegate?: () => number;
-        ValueYDelegate?: () => number;
-        WidgetStyle?: RecursivePartial<UE.Synth2DSliderStyle>;
-        SliderHandleColor?: RecursivePartial<UE.LinearColor>;
-        IndentHandle?: boolean;
-        Locked?: boolean;
-        StepSize?: number;
-        IsFocusable?: boolean;
-        OnMouseCaptureBegin?: () => void;
-        OnMouseCaptureEnd?: () => void;
-        OnControllerCaptureBegin?: () => void;
-        OnControllerCaptureEnd?: () => void;
-        OnValueChangedX?: (Value: number) => void;
-        OnValueChangedY?: (Value: number) => void;
-    }
-
-    class Synth2DSlider extends React.Component<Synth2DSliderProps> {
-        nativePtr: UE.Synth2DSlider;
-    }
-
-    interface SynthKnobProps extends WidgetProps {
-        Value?: number;
-        StepSize?: number;
-        MouseSpeed?: number;
-        MouseFineTuneSpeed?: number;
-        ShowTooltipInfo?: boolean;
-        ParameterName?: string;
-        ParameterUnits?: string;
-        ValueDelegate?: () => number;
-        WidgetStyle?: RecursivePartial<UE.SynthKnobStyle>;
-        Locked?: boolean;
-        IsFocusable?: boolean;
-        OnMouseCaptureBegin?: () => void;
-        OnMouseCaptureEnd?: () => void;
-        OnControllerCaptureBegin?: () => void;
-        OnControllerCaptureEnd?: () => void;
-        OnValueChanged?: (Value: number) => void;
-    }
-
-    class SynthKnob extends React.Component<SynthKnobProps> {
-        nativePtr: UE.SynthKnob;
     }
 
     interface ReactWidgetProps extends UserWidgetProps {

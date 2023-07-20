@@ -13,3 +13,5 @@ Saved
 /*.sln
 /.vsconfig
 /Plugins/Puerts/ThirdParty/v8
+/Content/__ExternalActors__
+/Content/__ExternalObjects__
