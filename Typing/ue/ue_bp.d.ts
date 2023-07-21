@@ -36,6 +36,77 @@ declare module "ue" {
     }
 
 // __TYPE_DECL_END
+// __TYPE_DECL_START: 93C57B0E43C686EE416E1A977871A538
+    namespace Game.BP_AutoBindActor {
+        class BP_AutoBindActor_C extends UE.Actor {
+            constructor(Outer?: Object, Name?: string, ObjectFlags?: number);
+            DefaultSceneRoot: UE.SceneComponent;
+            GetModuleName() : string;
+            static StaticClass(): Class;
+            static Find(OrigInName: string, Outer?: Object): BP_AutoBindActor_C;
+            static Load(InName: string): BP_AutoBindActor_C;
+        
+            __tid_BP_AutoBindActor_C_0__: boolean;
+        }
+        
+    }
+
+// __TYPE_DECL_END
+// __TYPE_DECL_START: 54084F3F4C351B07B4EBAE8A0DB9ABED
+    namespace Game.BP_ManualBindActor {
+        class BP_ManualBindActor_C extends UE.Actor {
+            constructor(Outer?: Object, Name?: string, ObjectFlags?: number);
+            DefaultSceneRoot: UE.SceneComponent;
+            static StaticClass(): Class;
+            static Find(OrigInName: string, Outer?: Object): BP_ManualBindActor_C;
+            static Load(InName: string): BP_ManualBindActor_C;
+        
+            __tid_BP_ManualBindActor_C_0__: boolean;
+        }
+        
+    }
+
+// __TYPE_DECL_END
+// __TYPE_DECL_START: 59ADD20544E242E59B518787A6F8F288
+    namespace Game.StarterContent.TestEnum {
+        enum TestEnum { Blue, Red, Green, TestEnum_MAX, __typeKeyDoNoAccess}
+    }
+
+// __TYPE_DECL_END
+// __TYPE_DECL_START: 2620B05B4D570B271A8AAF934441D4E7
+    namespace Game.StarterContent.TestWidgetBlueprint {
+        class TestWidgetBlueprint_C extends UE.UserWidget {
+            constructor(Outer?: Object, Name?: string, ObjectFlags?: number);
+            Button1: UE.Button;
+            TextBox: UE.MultiLineEditableTextBox;
+            static StaticClass(): Class;
+            static Find(OrigInName: string, Outer?: Object): TestWidgetBlueprint_C;
+            static Load(InName: string): TestWidgetBlueprint_C;
+        
+            __tid_TestWidgetBlueprint_C_0__: boolean;
+        }
+        
+    }
+
+// __TYPE_DECL_END
+// __TYPE_DECL_START: C9B8A43E442C8D87E5B77BB284D93163
+    namespace Game.StarterContent.TestStruct {
+        class TestStruct {
+            constructor();
+            constructor(speed: number, age: number);
+            speed: number;
+            age: number;
+            /**
+             * @deprecated use StaticStruct instead.
+             */
+            static StaticClass(): ScriptStruct;
+            static StaticStruct(): ScriptStruct;
+            __tid_TestStruct_0__: boolean;
+        }
+        
+    }
+
+// __TYPE_DECL_END
 // __TYPE_DECL_START: A5C7E431443721484614F0A5183DEBCD
     namespace Game.StarterContent.TestBlueprint {
         class TestBlueprint_C extends UE.Actor {
@@ -78,25 +149,6 @@ declare module "ue" {
     }
 
 // __TYPE_DECL_END
-// __TYPE_DECL_START: 33357AC6463C3AB157426D9264E94557
-    namespace Game.StarterContent.MixinSuperTestBase {
-        class MixinSuperTestBase_C extends UE.Actor {
-            constructor(Outer?: Object, Name?: string, ObjectFlags?: number);
-            UberGraphFrame: UE.PointerToUberGraphFrame;
-            DefaultSceneRoot: UE.SceneComponent;
-            ExecuteUbergraph_MixinSuperTestBase(EntryPoint: number) : void;
-            Foo() : void;
-            ReceiveBeginPlay() : void;
-            static StaticClass(): Class;
-            static Find(OrigInName: string, Outer?: Object): MixinSuperTestBase_C;
-            static Load(InName: string): MixinSuperTestBase_C;
-        
-            __tid_MixinSuperTestBase_C_0__: boolean;
-        }
-        
-    }
-
-// __TYPE_DECL_END
 // __TYPE_DECL_START: 2BDEF8114014B8B86032D4A518847312
     namespace Game.StarterContent.MixinSuperTestDerived {
         class MixinSuperTestDerived_C extends UE.Game.StarterContent.MixinSuperTestBase.MixinSuperTestBase_C {
@@ -112,41 +164,20 @@ declare module "ue" {
     }
 
 // __TYPE_DECL_END
-// __TYPE_DECL_START: 59ADD20544E242E59B518787A6F8F288
-    namespace Game.StarterContent.TestEnum {
-        enum TestEnum { Blue, Red, Green, TestEnum_MAX, __typeKeyDoNoAccess}
-    }
-
-// __TYPE_DECL_END
-// __TYPE_DECL_START: C9B8A43E442C8D87E5B77BB284D93163
-    namespace Game.StarterContent.TestStruct {
-        class TestStruct {
-            constructor();
-            constructor(speed: number, age: number);
-            speed: number;
-            age: number;
-            /**
-             * @deprecated use StaticStruct instead.
-             */
-            static StaticClass(): ScriptStruct;
-            static StaticStruct(): ScriptStruct;
-            __tid_TestStruct_0__: boolean;
-        }
-        
-    }
-
-// __TYPE_DECL_END
-// __TYPE_DECL_START: 2620B05B4D570B271A8AAF934441D4E7
-    namespace Game.StarterContent.TestWidgetBlueprint {
-        class TestWidgetBlueprint_C extends UE.UserWidget {
+// __TYPE_DECL_START: 33357AC6463C3AB157426D9264E94557
+    namespace Game.StarterContent.MixinSuperTestBase {
+        class MixinSuperTestBase_C extends UE.Actor {
             constructor(Outer?: Object, Name?: string, ObjectFlags?: number);
-            Button1: UE.Button;
-            TextBox: UE.MultiLineEditableTextBox;
+            UberGraphFrame: UE.PointerToUberGraphFrame;
+            DefaultSceneRoot: UE.SceneComponent;
+            ExecuteUbergraph_MixinSuperTestBase(EntryPoint: number) : void;
+            Foo() : void;
+            ReceiveBeginPlay() : void;
             static StaticClass(): Class;
-            static Find(OrigInName: string, Outer?: Object): TestWidgetBlueprint_C;
-            static Load(InName: string): TestWidgetBlueprint_C;
+            static Find(OrigInName: string, Outer?: Object): MixinSuperTestBase_C;
+            static Load(InName: string): MixinSuperTestBase_C;
         
-            __tid_TestWidgetBlueprint_C_0__: boolean;
+            __tid_MixinSuperTestBase_C_0__: boolean;
         }
         
     }
