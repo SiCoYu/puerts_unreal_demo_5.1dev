@@ -7,20 +7,20 @@
 #include "Map.h"
 #include "XContext.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_RetVal_SixParams(UClass*, FScriptMixinDelegate, UClass*, ParentClass, const FString&, ModulePath, bool, ObjectTakeByNative, bool, Inherit, bool, NoMixinedWarning, bool, ReMixed);
+DECLARE_DYNAMIC_DELEGATE_RetVal_SixParams(UClass*, FMixinDelegate, UClass*, ParentClass, const FName&, TSModuleName, bool, ObjectTakeByNative, bool, Inherit, bool, NoMixinedWarning, bool, ReMixed);
 
 UCLASS()
 class PUERTS_UNREAL_DEMO_API UXContext : public UObject
 {
 	GENERATED_BODY()
 public:
-	bool HasMixin(const FString& ModulePath);
-	UClass* Mixin(UClass* ParentClass, const FString& ModulePath, bool ObjectTakeByNative, bool Inherit, bool NoMixinedWarning, bool ReMixed);
+	bool HasMixin(const FName& TSModuleName);
+	UClass* Mixin(UClass* ParentClass, const FName& TSModuleName, bool ObjectTakeByNative, bool Inherit, bool NoMixinedWarning, bool ReMixed);
 	bool UnMixinClass(const FString& ModulePath);
 	bool UnMixinAllClass();
 public:
 	UPROPERTY(EditAnywhere, Category = MixinGoToTS, meta = (IsBindableEvent = "True"))
-	FScriptMixinDelegate ScriptMixInHandle;
+	FMixinDelegate CallMixinFromCPP;
 
 private:
 	TMap<FName, UClass*> TSObjMixinMap;

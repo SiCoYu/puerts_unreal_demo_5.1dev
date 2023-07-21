@@ -134,7 +134,7 @@ function _Mixin(ParentClass, ModulePath, ObjectTakeByNative, Inherit, NoMixinedW
     }
     return mixinClass.StaticClass();
 }
-xContext.ScriptMixInHandle.Bind(_Mixin);
+xContext.CallMixinFromCPP.Bind(_Mixin);
 //蓝图加载
 //UE.Class.Load方式
 //let bpClass = UE.Class.Load('/Game/StarterContent/TestBlueprint.TestBlueprint_C')

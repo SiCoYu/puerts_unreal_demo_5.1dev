@@ -4,16 +4,15 @@
 #include "XContext.h"
 
 
-bool UXContext::HasMixin(const FString& ModulePath)
+bool UXContext::HasMixin(const FName& TSModuleName)
 {
-	FName TSClassName = FName(*ModulePath);
-	if (TSObjInMixiningMap.Contains(TSClassName))
+	if (TSObjInMixiningMap.Contains(TSModuleName))
 	{
 		return true;
 	}
-	if (TSObjMixinMap.Contains(TSClassName))
+	if (TSObjMixinMap.Contains(TSModuleName))
 	{
-		UClass* MixinClass = TSObjMixinMap[TSClassName];
+		UClass* MixinClass = TSObjMixinMap[TSModuleName];
 		if (MixinClass)
 		{
 			return true;
@@ -22,26 +21,35 @@ bool UXContext::HasMixin(const FString& ModulePath)
 	return false;
 }
 
-UClass* UXContext::Mixin(UClass* ParentClass, const FString& ModulePath, bool ObjectTakeByNative, bool Inherit, bool NoMixinedWarning, bool ReMixed)
+UClass* UXContext::Mixin(UClass* ParentClass, const FName& TSModuleName, bool ObjectTakeByNative, bool Inherit, bool NoMixinedWarning, bool ReMixed)
 {
-	if (ScriptMixInHandle.IsBound()) 
+	if (CallMixinFromCPP.IsBound()) 
 	{
-		FName TSClassName = FName(*ModulePath);
-		TSObjInMixiningMap.Add(TSClassName, true);
-		UClass* MixRet = ScriptMixInHandle.Execute(ParentClass, ModulePath, false, false, false, ReMixed);
+		TSObjInMixiningMap.Add(TSModuleName, true);
+		UClass* MixRet = CallMixinFromCPP.Execute(ParentClass, TSModuleName, false, false, false, ReMixed);
 		if (MixRet)
 		{
-			TSObjInMixiningMap.Remove(TSClassName);
-			if (!TSObjMixinMap.Contains(TSClassName))
+			TSObjInMixiningMap.Remove(TSModuleName);
+			if (!TSObjMixinMap.Contains(TSModuleName))
 			{
-				TSObjMixinMap.Add(TSClassName, MixRet);
+				TSObjMixinMap.Add(TSModuleName, MixRet);
 			}
 			else
 			{
-				UE_LOG(LogTemp, Log, TEXT("Repeat Mixin TSClassName = %s"),*ModulePath);
+				UE_LOG(LogTemp, Log, TEXT("Repeat Mixin TSModuleName = %s"), *(TSModuleName.ToString()));
 			}
 			return MixRet;
 		}
 	}
 	return nullptr;
+}
+
+bool UXContext::UnMixinClass(const FString& ModulePath)
+{
+	return true;
+}
+
+bool UXContext::UnMixinAllClass()
+{
+	return true;
 }

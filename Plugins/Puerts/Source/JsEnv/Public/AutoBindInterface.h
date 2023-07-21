@@ -21,11 +21,9 @@ class UAutoBindInterface : public UInterface
 class JSENV_API IAutoBindInterface
 {
 	GENERATED_BODY()
-
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	FString GetModuleName() const;
+	FName GetTSModuleName() const;
 	virtual void NotifyUObjectCreated(const UObjectBase* ObjectBase, int32 Index) = 0;
 	virtual void NotifyUObjectDeleted(const UObjectBase* ObjectBase, int32 Index) = 0;
 };

@@ -155,7 +155,7 @@ function _Mixin(ParentClass: UE.Class, ModulePath: string, ObjectTakeByNative: b
     }
     return mixinClass.StaticClass();
 }
-xContext.ScriptMixInHandle.Bind(_Mixin)
+xContext.CallMixinFromCPP.Bind(_Mixin)
 
 //蓝图加载
 //UE.Class.Load方式

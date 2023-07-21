@@ -24,11 +24,9 @@ public:
     virtual void OnStart() override;
 
     virtual void Shutdown() override;
-    UFUNCTION(BlueprintCallable)
-    void MixinBP(AActor* Target);
-
+    
 	UFUNCTION(BlueprintCallable)
-	void MixinBPClass(UClass* TargetClass, FString TSName, bool SpawnActorInTS);
+	void MixinBPClass(UClass* TargetClass, FName TSName, bool SpawnActorInTS);
 
 	void NotifyUObjectCreated(const UObjectBase* InObjectBase, int32 Index) override;
 

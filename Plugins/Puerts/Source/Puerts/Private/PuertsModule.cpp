@@ -291,11 +291,7 @@ void FPuertsModule::NotifyUObjectCreated(const class UObjectBase* InObject, int3
         if (JsEnv.IsValid())
         {
             UObject* Object = (UObject*)InObject;
-            if (Object == nullptr)
-            {
-                return;
-            }
-            if (Object->IsA<UGameInstance>())
+            if (Object == nullptr || Object->IsA<UGameInstance>())
             {
                 return;
             }
@@ -311,26 +307,16 @@ void FPuertsModule::NotifyUObjectCreated(const class UObjectBase* InObject, int3
             {
                 if (IsInAsyncLoadingThread())
                 {
-                    UE_LOG(LogTemp, Log, TEXT("=====IsInAsyncLoadingThread"));
+                    //TODO:yuxikuo   
+                    //需要处理异步创建蓝图情况
                 }
-                AActor* Actor = CastChecked<AActor>(Object);
-                
-                if (IsValid(Actor)) 
-                {
-                    UE_LOG(LogTemp, Log, TEXT("Actor=====%s"), *(Actor->GetName()));
-                }
-				UWorld* World = Actor->GetWorld();
-				if (World == nullptr)
-				{
-					return;
-				}
-				//UGameInstance* GameInstance = World->GetGameInstance();
                 UGameInstance* GameInstance = GWorld->GetGameInstance();
 				if (GameInstance)
 				{
 					IAutoBindInterface* RawInterface = Cast<IAutoBindInterface>(GameInstance);
 					if (RawInterface)
 					{
+                        AActor* Actor = CastChecked<AActor>(Object);
 						RawInterface->NotifyUObjectCreated(Actor, Index);
 					}
 				}

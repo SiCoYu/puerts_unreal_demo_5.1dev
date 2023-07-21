@@ -34,15 +34,7 @@ void UTsGameInstance::Shutdown()
     GameScript.Reset();
 }
 
-void UTsGameInstance::MixinBP(AActor* Target)
-{
-    if (Target)
-    {
-        RuntimeContext->Mixin(Target->StaticClass(),"", false, false, false, false);
-    }    
-}
-
-void UTsGameInstance::MixinBPClass(UClass* TargetClass, FString TSName, bool SpawnActorInTS)
+void UTsGameInstance::MixinBPClass(UClass* TargetClass, FName TSName, bool SpawnActorInTS)
 {
     if (IsValid(TargetClass) && !RuntimeContext->HasMixin(TSName)) 
     {
@@ -52,7 +44,11 @@ void UTsGameInstance::MixinBPClass(UClass* TargetClass, FString TSName, bool Spa
             AActor* pActor = GetWorld()->SpawnActor<AActor>(MixinClass);
             UE_LOG(LogTemp, Log, TEXT("[CPP2TS] Spawn Actor From C++ = %s"), *(pActor->GetName()));
         }
-    }    
+    }  
+    else
+    {
+        UE_LOG(LogTemp, Log, TEXT("[CPP2TS] Repeat Mixin TSModuleName = %s"), *(TSName.ToString()));
+    }
 }
 
 void UTsGameInstance::NotifyUObjectCreated(const UObjectBase* InObjectBase, int32 Index)
@@ -77,16 +73,11 @@ void UTsGameInstance::NotifyUObjectCreated(const UObjectBase* InObjectBase, int3
     const AActor* Actor = CastChecked<AActor>(CDO);
     if (Actor)
     {
-		FString ModuleName = IAutoBindInterface::Execute_GetModuleName(Actor);
-
+		FName TSModuleName = IAutoBindInterface::Execute_GetTSModuleName(Actor);
 		AActor* ActorCDO = Cast<AActor>(Actor->GetClass()->GetDefaultObject());
-		if (ActorCDO)
-		{
-            UE_LOG(LogTemp, Log, TEXT("Actor CDO = %s"), *(ActorCDO->GetActorLabel()));
-		}
 		UBlueprintGeneratedClass* ActorBPClass = Cast<UBlueprintGeneratedClass>(Actor->GetClass());
-        UE_LOG(LogTemp, Log, TEXT("Actor = %s"), *(ActorBPClass->GetName()));
-		MixinBPClass(ActorBPClass, ModuleName, true);
+        UE_LOG(LogTemp, Log, TEXT("[CPP2TS]BPActor Class = %s"), *(ActorBPClass->GetName()));
+		MixinBPClass(ActorBPClass, TSModuleName, true);
     }
 }
 
