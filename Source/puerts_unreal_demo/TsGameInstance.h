@@ -6,13 +6,14 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "AutoBindInterface.h"
 #include "TsGameInstance.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PUERTS_UNREAL_DEMO_API UTsGameInstance : public UGameInstance
+class PUERTS_UNREAL_DEMO_API UTsGameInstance : public UGameInstance, public IAutoBindInterface
 {
 	GENERATED_BODY()
 
@@ -28,6 +29,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void MixinBPClass(UClass* TargetClass, FString TSName, bool SpawnActorInTS);
+
+	void NotifyUObjectCreated(const UObjectBase* InObjectBase, int32 Index) override;
+
+	void NotifyUObjectDeleted(const UObjectBase* InObjectBase, int32 Index) override;
 private:
     TSharedPtr<puerts::FJsEnv> GameScript;
     class UXContext* RuntimeContext;

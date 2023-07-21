@@ -25,6 +25,10 @@
 #include "Misc/Paths.h"
 #include "Misc/CommandLine.h"
 #include "Misc/ConfigCacheIni.h"
+#include "Kismet/GameplayStatics.h"
+#include "JsEnv/Public/AutoBindInterface.h"
+#include "AutoBindInterface.h"
+#include "GameFramework/Actor.h"
 
 DEFINE_LOG_CATEGORY_STATIC(PuertsModule, Log, All);
 
@@ -280,6 +284,57 @@ void FPuertsModule::NotifyUObjectCreated(const class UObjectBase* InObject, int3
         {
             // UE_LOG(PuertsModule, Warning, TEXT("Group Mode TryBindJs"));
             JsEnvGroup->TryBindJs(InObject);
+        }
+    }
+    if (InObject) 
+    {
+        if (JsEnv.IsValid())
+        {
+            UObject* Object = (UObject*)InObject;
+            if (Object == nullptr)
+            {
+                return;
+            }
+            if (Object->IsA<UGameInstance>())
+            {
+                return;
+            }
+			const auto Class = Object->IsA<UClass>() ? static_cast<UClass*>(Object) : Object->GetClass();
+			if (Class->HasAnyClassFlags(CLASS_NewerVersionExists))
+			{
+				return;
+			}
+
+			static UClass* InterfaceClass = UAutoBindInterface::StaticClass();
+			const bool bImplUnluaInterface = Class->ImplementsInterface(InterfaceClass);
+            if (bImplUnluaInterface)
+            {
+                if (IsInAsyncLoadingThread())
+                {
+                    UE_LOG(LogTemp, Log, TEXT("=====IsInAsyncLoadingThread"));
+                }
+                AActor* Actor = CastChecked<AActor>(Object);
+                
+                if (IsValid(Actor)) 
+                {
+                    UE_LOG(LogTemp, Log, TEXT("Actor=====%s"), *(Actor->GetName()));
+                }
+				UWorld* World = Actor->GetWorld();
+				if (World == nullptr)
+				{
+					return;
+				}
+				//UGameInstance* GameInstance = World->GetGameInstance();
+                UGameInstance* GameInstance = GWorld->GetGameInstance();
+				if (GameInstance)
+				{
+					IAutoBindInterface* RawInterface = Cast<IAutoBindInterface>(GameInstance);
+					if (RawInterface)
+					{
+						RawInterface->NotifyUObjectCreated(Actor, Index);
+					}
+				}
+            }         
         }
     }
 }

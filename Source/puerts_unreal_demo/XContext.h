@@ -14,11 +14,15 @@ class PUERTS_UNREAL_DEMO_API UXContext : public UObject
 {
 	GENERATED_BODY()
 public:
+	bool HasMixin(const FString& ModulePath);
 	UClass* Mixin(UClass* ParentClass, const FString& ModulePath, bool ObjectTakeByNative, bool Inherit, bool NoMixinedWarning, bool ReMixed);
+	bool UnMixinClass(const FString& ModulePath);
+	bool UnMixinAllClass();
 public:
 	UPROPERTY(EditAnywhere, Category = MixinGoToTS, meta = (IsBindableEvent = "True"))
 	FScriptMixinDelegate ScriptMixInHandle;
 
 private:
 	TMap<FName, UClass*> TSObjMixinMap;
+	TMap<FName, bool> TSObjInMixiningMap;
 };
