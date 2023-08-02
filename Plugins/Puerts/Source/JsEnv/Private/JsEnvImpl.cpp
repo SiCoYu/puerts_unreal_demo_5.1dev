@@ -3285,7 +3285,7 @@ void FJsEnvImpl::Start(const FString& ModuleNameOrScript, const TArray<TPair<FSt
         Logger->Error("Started yet!");
         return;
     }
-
+    UE_LOG(LogTemp,Log,TEXT("FJsEnvImpl::Start ModuleNameOrScript = %s"), *ModuleNameOrScript);
     auto Isolate = MainIsolate;
 #ifdef THREAD_SAFE
     v8::Locker Locker(Isolate);

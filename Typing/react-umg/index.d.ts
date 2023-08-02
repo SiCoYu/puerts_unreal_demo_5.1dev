@@ -989,6 +989,13 @@ declare module "react-umg" {
         nativePtr: UE.SinglePropertyView;
     }
 
+    interface TakeRecorderOverlayWidgetProps extends UserWidgetProps {
+    }
+
+    class TakeRecorderOverlayWidget extends React.Component<TakeRecorderOverlayWidgetProps> {
+        nativePtr: UE.TakeRecorderOverlayWidget;
+    }
+
     interface RadialSliderProps extends WidgetProps {
         Value?: number;
         ValueDelegate?: () => number;
@@ -1127,16 +1134,6 @@ declare module "react-umg" {
         nativePtr: UE.AudioFrequencySlider;
     }
 
-    interface EditorUtilityWidgetProps extends UserWidgetProps {
-        HelpText?: string;
-        bAlwaysReregisterWithWindowsMenu?: boolean;
-        bAutoRunDefaultAction?: boolean;
-    }
-
-    class EditorUtilityWidget extends React.Component<EditorUtilityWidgetProps> {
-        nativePtr: UE.EditorUtilityWidget;
-    }
-
     interface Synth2DSliderProps extends WidgetProps {
         ValueX?: number;
         ValueY?: number;
@@ -1183,11 +1180,14 @@ declare module "react-umg" {
         nativePtr: UE.SynthKnob;
     }
 
-    interface TakeRecorderOverlayWidgetProps extends UserWidgetProps {
+    interface EditorUtilityWidgetProps extends UserWidgetProps {
+        HelpText?: string;
+        bAlwaysReregisterWithWindowsMenu?: boolean;
+        bAutoRunDefaultAction?: boolean;
     }
 
-    class TakeRecorderOverlayWidget extends React.Component<TakeRecorderOverlayWidgetProps> {
-        nativePtr: UE.TakeRecorderOverlayWidget;
+    class EditorUtilityWidget extends React.Component<EditorUtilityWidgetProps> {
+        nativePtr: UE.EditorUtilityWidget;
     }
 
     interface ReactWidgetProps extends UserWidgetProps {

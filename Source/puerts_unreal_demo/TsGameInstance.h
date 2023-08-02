@@ -25,9 +25,6 @@ public:
 
     virtual void Shutdown() override;
     
-	UFUNCTION(BlueprintCallable)
-	void MixinBPClass(UClass* TargetClass, FName TSName, bool SpawnActorInTS);
-
 	void NotifyUObjectCreated(const UObjectBase* InObjectBase, int32 Index) override;
 
 	void NotifyUObjectDeleted(const UObjectBase* InObjectBase, int32 Index) override;

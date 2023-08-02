@@ -7,22 +7,23 @@
 #include "Map.h"
 #include "XContext.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_RetVal_SixParams(UClass*, FMixinDelegate, UClass*, ParentClass, const FName&, TSModuleName, bool, ObjectTakeByNative, bool, Inherit, bool, NoMixinedWarning, bool, ReMixed);
-
+DECLARE_DYNAMIC_DELEGATE_RetVal_SixParams(UClass*, FDoMixinDelegate,const UClass*, ParentClass, const FName&, TSModuleName, bool, ObjectTakeByNative, bool, Inherit, bool, NoMixinedWarning, bool, ReMixed);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FDoUnMixinDelegate, const FName&, TSModuleName);
 UCLASS()
 class PUERTS_UNREAL_DEMO_API UXContext : public UObject
 {
 	GENERATED_BODY()
 public:
-	bool HasMixin(const FName& TSModuleName);
-	UClass* Mixin(UClass* ParentClass, const FName& TSModuleName, bool ObjectTakeByNative, bool Inherit, bool NoMixinedWarning, bool ReMixed);
-	bool UnMixinClass(const FString& ModulePath);
+	bool HasMixin(const UClass* ParentClass);
+	UClass* Mixin(const UClass* ParentClass, const FName& TSModuleName, bool ObjectTakeByNative, bool Inherit, bool NoMixinedWarning, bool ReMixed);
+	bool UnMixinClass(const UClass* ParentClass);
 	bool UnMixinAllClass();
 public:
 	UPROPERTY(EditAnywhere, Category = MixinGoToTS, meta = (IsBindableEvent = "True"))
-	FMixinDelegate CallMixinFromCPP;
-
+	FDoMixinDelegate CallMixinFromCPP;
+	UPROPERTY(EditAnywhere, Category = MixinGoToTS, meta = (IsBindableEvent = "True"))
+	FDoUnMixinDelegate CallUnMixinFromCPP;
 private:
-	TMap<FName, UClass*> TSObjMixinMap;
-	TMap<FName, bool> TSObjInMixiningMap;
+	TMap<const UClass*, FName> TSObjMixinMap;
+	TMap<const UClass*, bool> TSObjInMixiningMap;
 };

@@ -50,6 +50,8 @@ public:
 
     virtual const TArray<FString>& GetIgnoreStructListOnDTS() = 0;
 
+
+    class UGameInstance* GGameInstance;
 #if WITH_EDITOR
     virtual bool IsInPIE() = 0;
 #endif

@@ -288,6 +288,12 @@ void FPuertsModule::NotifyUObjectCreated(const class UObjectBase* InObject, int3
     }
     if (InObject) 
     {
+        const UClass* Class = (UClass*)InObject;
+
+        if (IsValid(Class))
+        {
+            UE_LOG(LogTemp, Log, TEXT("[Created] ClassName = %s, ClassPtr = %p"), *(Class->GetName()), InObject);
+        }
         if (JsEnv.IsValid())
         {
             UObject* Object = (UObject*)InObject;
@@ -305,21 +311,29 @@ void FPuertsModule::NotifyUObjectCreated(const class UObjectBase* InObject, int3
 			const bool bImplUnluaInterface = Class->ImplementsInterface(InterfaceClass);
             if (bImplUnluaInterface)
             {
-                if (IsInAsyncLoadingThread())
+                AActor* Actor = CastChecked<AActor>(Object);
+                if (Actor) 
                 {
-                    //TODO:yuxikuo   
-                    //需要处理异步创建蓝图情况
+                    UWorld* World = Actor->GetWorld();
+                    if (World) 
+                    {
+                        UGameInstance* GameInstance = World->GetGameInstance();
+                        if (GameInstance)
+                        {
+                            if (GGameInstance == nullptr)
+                            {
+                                GGameInstance = GameInstance;
+                            }
+                            IAutoBindInterface* RawInterface = Cast<IAutoBindInterface>(GameInstance);
+                            if (RawInterface)
+                            {
+                                AActor* Actor = CastChecked<AActor>(Object);
+                                RawInterface->NotifyUObjectCreated(Actor, Index);
+                            }
+                        }
+                    }
                 }
-                UGameInstance* GameInstance = GWorld->GetGameInstance();
-				if (GameInstance)
-				{
-					IAutoBindInterface* RawInterface = Cast<IAutoBindInterface>(GameInstance);
-					if (RawInterface)
-					{
-                        AActor* Actor = CastChecked<AActor>(Object);
-						RawInterface->NotifyUObjectCreated(Actor, Index);
-					}
-				}
+#endif
             }         
         }
     }
@@ -328,6 +342,17 @@ void FPuertsModule::NotifyUObjectCreated(const class UObjectBase* InObject, int3
 void FPuertsModule::NotifyUObjectDeleted(const class UObjectBase* InObject, int32 Index)
 {
     // UE_LOG(PuertsModule, Warning, TEXT("NotifyUObjectDeleted, %p"), InObject);
+#if WITH_EDITOR
+    return;
+#endif
+    if (GGameInstance)
+    {
+        IAutoBindInterface* RawInterface = Cast<IAutoBindInterface>(GGameInstance);
+        if (RawInterface)
+        {
+            RawInterface->NotifyUObjectDeleted(InObject, Index);
+        }
+    }
 }
 
 #if ENGINE_MINOR_VERSION > 22 || ENGINE_MAJOR_VERSION > 4

@@ -3,40 +3,38 @@
 
 #include "XContext.h"
 
-
-bool UXContext::HasMixin(const FName& TSModuleName)
+bool UXContext::HasMixin(const UClass* ParentClass)
 {
-	if (TSObjInMixiningMap.Contains(TSModuleName))
+	if (TSObjInMixiningMap.Contains(ParentClass))
 	{
+		UE_LOG(LogTemp, Log, TEXT("[HasMixin] HasMixin = true, %p"), ParentClass);
 		return true;
 	}
-	if (TSObjMixinMap.Contains(TSModuleName))
+	if (TSObjMixinMap.Contains(ParentClass))
 	{
-		UClass* MixinClass = TSObjMixinMap[TSModuleName];
-		if (MixinClass)
-		{
-			return true;
-		}
+		UE_LOG(LogTemp, Log, TEXT("[HasMixin] HasMixin = true, %p"), ParentClass);
+		return true;
 	}
 	return false;
 }
 
-UClass* UXContext::Mixin(UClass* ParentClass, const FName& TSModuleName, bool ObjectTakeByNative, bool Inherit, bool NoMixinedWarning, bool ReMixed)
+UClass* UXContext::Mixin(const UClass* ParentClass, const FName& TSModuleName, bool ObjectTakeByNative, bool Inherit, bool NoMixinedWarning, bool ReMixed)
 {
 	if (CallMixinFromCPP.IsBound()) 
 	{
-		TSObjInMixiningMap.Add(TSModuleName, true);
+		TSObjInMixiningMap.Add(ParentClass, true);
 		UClass* MixRet = CallMixinFromCPP.Execute(ParentClass, TSModuleName, false, false, false, ReMixed);
 		if (MixRet)
 		{
-			TSObjInMixiningMap.Remove(TSModuleName);
-			if (!TSObjMixinMap.Contains(TSModuleName))
+			UE_LOG(LogTemp, Log, TEXT("[Mixin] ClassName = %s, ClassPtr = %p"), *(TSModuleName.ToString()), ParentClass);
+			TSObjInMixiningMap.Remove(ParentClass);
+			if (!TSObjMixinMap.Contains(ParentClass))
 			{
-				TSObjMixinMap.Add(TSModuleName, MixRet);
+				TSObjMixinMap.Add(ParentClass, TSModuleName);
 			}
 			else
 			{
-				UE_LOG(LogTemp, Log, TEXT("Repeat Mixin TSModuleName = %s"), *(TSModuleName.ToString()));
+				UE_LOG(LogTemp, Log, TEXT("[Mixin] Repeat Mixin TSModuleName = %s"), *(TSModuleName.ToString()));
 			}
 			return MixRet;
 		}
@@ -44,9 +42,20 @@ UClass* UXContext::Mixin(UClass* ParentClass, const FName& TSModuleName, bool Ob
 	return nullptr;
 }
 
-bool UXContext::UnMixinClass(const FString& ModulePath)
+bool UXContext::UnMixinClass(const UClass* TSClass)
 {
-	return true;
+	if (TSObjMixinMap.Contains(TSClass))
+	{
+		if (CallUnMixinFromCPP.IsBound())
+		{
+			FName TSClassName = TSObjMixinMap[TSClass];
+			CallUnMixinFromCPP.Execute(TSClassName);
+			TSObjInMixiningMap.Remove(TSClass);
+			UE_LOG(LogTemp, Log, TEXT("[UnMixin] UnMixin ClassName = %s, ClassPtr = %p"), *(TSClassName.ToString()), TSClass);
+			return true;
+		}
+	}
+	return false;
 }
 
 bool UXContext::UnMixinAllClass()

@@ -6,6 +6,7 @@ import { argv, blueprint} from 'puerts';
 import { TSRegister } from "./Game/TSRegister";
 import { TSAutoBindActor } from './Game/TSAutoBindActor';
 
+console.log("[AutoMixinTest Start]");
 let xContext = (argv.getByName("Context") as UE.XContext);
 function _Mixin(ParentClass: UE.Class, ModulePath: string, ObjectTakeByNative: boolean, Inherit: boolean, NoMixinedWarning: boolean, SpawnInTS : boolean) : UE.Class {
     let tsObj = TSRegister.GetTSClassByName(ModulePath)
@@ -16,21 +17,13 @@ function _Mixin(ParentClass: UE.Class, ModulePath: string, ObjectTakeByNative: b
     const toJsClass = blueprint.tojs(ParentClass);
     console.log("[CPP2TS] AutoBind ModulePath = " + ModulePath + ", ParentClass = " + ParentClass.GetName());
     let config = {};
-    //TSAutoBindActor
-    let mixinClass = blueprint.mixin(toJsClass, tsObj, config)
-    if(mixinClass && SpawnInTS)
-    {
-        console.log("[CPP2TS] Spawn Actor From TS = " + mixinClass.name);
-        let transform = new UE.Transform(new UE.Rotator(0,0,0), new UE.Vector(0,0,0), new UE.Vector(1,1,1));
-        let gameInstance = (argv.getByName("GameInstance") as UE.GameInstance);
-        let tsAutoBindActor =  UE.GameplayStatics.BeginDeferredActorSpawnFromClass(gameInstance, mixinClass.StaticClass(), undefined, UE.ESpawnActorCollisionHandlingMethod.Undefined) as TSAutoBindActor;
-        UE.GameplayStatics.FinishSpawningActor(tsAutoBindActor, undefined);
-        if(tsAutoBindActor)
-        {
-            tsAutoBindActor.SetActorHiddenInGame(false);
-            tsAutoBindActor.OnCreate(12345);
-        }
-    }
+    let mixinClass = blueprint.mixin(toJsClass, TSAutoBindActor, config)
     return mixinClass.StaticClass();
 }
+
+function _UnMixin(TSClassName : string) {
+    console.log("unmixin "+TSClassName);
+}
 xContext.CallMixinFromCPP.Bind(_Mixin)
+xContext.CallUnMixinFromCPP.Bind(_UnMixin);
+console.log("[AutoMixinTest End]");
