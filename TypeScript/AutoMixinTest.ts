@@ -27,3 +27,16 @@ function _UnMixin(TSClassName : string) {
 xContext.CallMixinFromCPP.Bind(_Mixin)
 xContext.CallUnMixinFromCPP.Bind(_UnMixin);
 console.log("[AutoMixinTest End]");
+
+let gameInstance = (argv.getByName("GameInstance") as UE.GameInstance);
+blueprint.load(UE.Game.BP_AutoBindActor.BP_AutoBindActor_C);
+const BP_AutoBindActor_C = UE.Game.BP_AutoBindActor.BP_AutoBindActor_C;//别名
+let tsAutoBindActor =  UE.GameplayStatics.BeginDeferredActorSpawnFromClass(gameInstance, BP_AutoBindActor_C.StaticClass(), undefined, UE.ESpawnActorCollisionHandlingMethod.Undefined) as TSAutoBindActor;
+UE.GameplayStatics.FinishSpawningActor(tsAutoBindActor, undefined);
+if(tsAutoBindActor)
+{
+    tsAutoBindActor.SetActorHiddenInGame(false);
+    tsAutoBindActor.OnCreate(12345);
+}
+//如果确定后续不需要使用TestBlueprint_C了，应该unload节省内存
+blueprint.unload(BP_AutoBindActor_C);

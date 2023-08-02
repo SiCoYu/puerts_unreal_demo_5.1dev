@@ -24,6 +24,6 @@ class JSENV_API IAutoBindInterface
 public:
 	UFUNCTION(BlueprintNativeEvent)
 	FName GetTSModuleName() const;
-	virtual void NotifyUObjectCreated(const UObjectBase* ObjectBase, int32 Index) = 0;
-	virtual void NotifyUObjectDeleted(const UObjectBase* ObjectBase, int32 Index) = 0;
+	virtual void NotifyUObjectCreated(UObject* ObjectBase, int32 Index) = 0;
+	virtual void NotifyUObjectDeleted(UObject* ObjectBase, int32 Index) = 0;
 };

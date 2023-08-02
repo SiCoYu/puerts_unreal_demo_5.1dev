@@ -51,6 +51,7 @@ bool UXContext::UnMixinClass(const UClass* TSClass)
 			FName TSClassName = TSObjMixinMap[TSClass];
 			CallUnMixinFromCPP.Execute(TSClassName);
 			TSObjInMixiningMap.Remove(TSClass);
+			TSObjMixinMap.Remove(TSClass);
 			UE_LOG(LogTemp, Log, TEXT("[UnMixin] UnMixin ClassName = %s, ClassPtr = %p"), *(TSClassName.ToString()), TSClass);
 			return true;
 		}

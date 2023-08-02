@@ -35,68 +35,55 @@ void UTsGameInstance::Shutdown()
     GameScript.Reset();
 }
 
-void UTsGameInstance::NotifyUObjectCreated(const UObjectBase* InObjectBase, int32 Index)
+void UTsGameInstance::NotifyUObjectCreated(UObject* InObject, int32 Index)
 {  
-	UObjectBaseUtility* Object = (UObjectBaseUtility*)InObjectBase;
-	if (Object)
+	const auto Class = InObject->IsA<UClass>() ? static_cast<UClass*>(InObject) : InObject->GetClass();
+	if (Class->HasAnyClassFlags(CLASS_NewerVersionExists))
 	{
-		static UClass* InterfaceClass = UAutoBindInterface::StaticClass();
-		if (!Object->HasAnyFlags(RF_ClassDefaultObject | RF_ArchetypeObject))// | RF_NeedInitialization))//过滤掉CDO对象和模版对象
+		return;
+	}
+
+	static UClass* InterfaceClass = UAutoBindInterface::StaticClass();
+	const bool bImplUnluaInterface = Class->ImplementsInterface(InterfaceClass);
+
+	check(Class);
+
+	if (Class->HasAnyFlags(RF_NeedPostLoad | RF_NeedPostLoadSubobjects))
+		return;
+
+	if (RuntimeContext->HasMixin(Class))
+		return;
+	UFunction* Func = Class->FindFunctionByName(FName("GetTSModuleName"));
+	if (Func)
+	{
+		FName TSClassName;
+		UObject* DefaultObject = Class->GetDefaultObject();
+		DefaultObject->UObject::ProcessEvent(Func, &TSClassName);
+
+		if (!RuntimeContext->HasMixin(Class))
 		{
-			UClass* Class = Object->GetClass();
-			if (Class->IsChildOf<UPackage>() || Class->IsChildOf<UClass>())//过滤掉UPackage和UClass
-			{
-				//UE_LOG(LogTemp, Log, TEXT("%s===return 1"), *(Object->GetName()));
-				return;
-			}
-			if (Class->HasAnyClassFlags(CLASS_NewerVersionExists))//过滤掉废弃蓝图对象
-			{
-				//UE_LOG(LogTemp, Log, TEXT("%s===return 2"), *(Object->GetName()));
-				return;
-			}
-			if (Class->ImplementsInterface(InterfaceClass))
-			{
-				UObject* TempObject = (UObject*)InObjectBase;
-				UFunction* Func = Class->FindFunctionByName(FName("GetTSModuleName"));
-				if (Func)
-				{
-					bool bIsActor = Class->IsChildOf<AActor>();
-					bool bIsUObject = Class->IsChildOf<UObject>();
-					if (Func->GetNativeFunc())
-					{
-						if (IsInGameThread())
-						{
-							FName TSClassName;
-							UObject* DefaultObject = Class->GetDefaultObject();
-							DefaultObject->UObject::ProcessEvent(Func, &TSClassName);
-							if (TSClassName.ToString().Len() > 0)
-							{
-								if (!RuntimeContext->HasMixin(Class))
-								{
-									UClass* MixinClass = RuntimeContext->Mixin(Class, TSClassName, false, false, false, false);
-									UE_LOG(LogTemp, Log, TEXT("[Mixin] Class = %s, ClassPtr = %p"), *(TSClassName.ToString()), Class);
-								}
-								else
-								{
-									UE_LOG(LogTemp, Log, TEXT("[Mixin] Repeat Mixin Class = %s, ClassPtr = %p"), *(TSClassName.ToString()), Class);
-								}
-								
-							}
-						}
-					}
-				}
-			}
+			UClass* MixinClass = RuntimeContext->Mixin(Class, TSClassName, false, false, false, false);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Log, TEXT("[Mixin] Repeat Mixin Class = %s, ClassPtr = %p"), *(TSClassName.ToString()), Class);
 		}
 	}
 }
 
-void UTsGameInstance::NotifyUObjectDeleted(const UObjectBase* InObjectBase, int32 Index)
+void UTsGameInstance::NotifyUObjectDeleted(UObject* InObject, int32 Index)
 {
-    const UClass* Class = (UClass*)InObjectBase;
-	
-	if (IsValid(Class))
+	UE_LOG(LogTemp, Log, TEXT("[Deleted] InObjectPtr = %p"), InObject);
+	const auto Class = InObject->IsA<UClass>() ? static_cast<UClass*>(InObject) : InObject->GetClass();
+	if (Class->HasAnyClassFlags(CLASS_NewerVersionExists))
+	{
+		return;
+	}
+	check(Class);
+	static UClass* InterfaceClass = UAutoBindInterface::StaticClass();
+	const bool bImplUnluaInterface = Class->ImplementsInterface(InterfaceClass);
+	if (bImplUnluaInterface) 
 	{
 		RuntimeContext->UnMixinClass(Class);
-		UE_LOG(LogTemp, Log, TEXT("[Deleted] ClassName = %s, ClassPtr = %p"), *(Class->GetName()), InObjectBase);
 	}
 }

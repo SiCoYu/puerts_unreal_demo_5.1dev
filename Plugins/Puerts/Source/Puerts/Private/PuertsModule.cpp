@@ -286,55 +286,47 @@ void FPuertsModule::NotifyUObjectCreated(const class UObjectBase* InObject, int3
             JsEnvGroup->TryBindJs(InObject);
         }
     }
-    if (InObject) 
+    if (InObject && JsEnv.IsValid()) 
     {
-        const UClass* Class = (UClass*)InObject;
-
+        UObject* Object = (UObject*)InObject;
+        if (Object == nullptr || Object->IsA<UGameInstance>())
+        {
+            return;
+        }
+		const auto Class = Object->IsA<UClass>() ? static_cast<UClass*>(Object) : Object->GetClass();
+		if (Class->HasAnyClassFlags(CLASS_NewerVersionExists))
+		{
+			return;
+		}
         if (IsValid(Class))
         {
-            UE_LOG(LogTemp, Log, TEXT("[Created] ClassName = %s, ClassPtr = %p"), *(Class->GetName()), InObject);
+            UE_LOG(LogTemp, Log, TEXT("[Created] ClassName = %s, ClassPtr = %p, InObjectPtr = %p"), *(Class->GetName()), Class, InObject);
         }
-        if (JsEnv.IsValid())
+		static UClass* InterfaceClass = UAutoBindInterface::StaticClass();
+		const bool bImplUnluaInterface = Class->ImplementsInterface(InterfaceClass);
+        if (bImplUnluaInterface)
         {
-            UObject* Object = (UObject*)InObject;
-            if (Object == nullptr || Object->IsA<UGameInstance>())
+            AActor* Actor = CastChecked<AActor>(Object);
+            if (Actor) 
             {
-                return;
-            }
-			const auto Class = Object->IsA<UClass>() ? static_cast<UClass*>(Object) : Object->GetClass();
-			if (Class->HasAnyClassFlags(CLASS_NewerVersionExists))
-			{
-				return;
-			}
-
-			static UClass* InterfaceClass = UAutoBindInterface::StaticClass();
-			const bool bImplUnluaInterface = Class->ImplementsInterface(InterfaceClass);
-            if (bImplUnluaInterface)
-            {
-                AActor* Actor = CastChecked<AActor>(Object);
-                if (Actor) 
+                UWorld* World = Actor->GetWorld();
+                if (World) 
                 {
-                    UWorld* World = Actor->GetWorld();
-                    if (World) 
+                    UGameInstance* GameInstance = World->GetGameInstance();
+                    if (GameInstance)
                     {
-                        UGameInstance* GameInstance = World->GetGameInstance();
-                        if (GameInstance)
+                        if (GGameInstance == nullptr)
                         {
-                            if (GGameInstance == nullptr)
-                            {
-                                GGameInstance = GameInstance;
-                            }
-                            IAutoBindInterface* RawInterface = Cast<IAutoBindInterface>(GameInstance);
-                            if (RawInterface)
-                            {
-                                AActor* Actor = CastChecked<AActor>(Object);
-                                RawInterface->NotifyUObjectCreated(Actor, Index);
-                            }
+                            GGameInstance = GameInstance;
+                        }
+                        IAutoBindInterface* RawInterface = Cast<IAutoBindInterface>(GameInstance);
+                        if (RawInterface)
+                        {
+                            RawInterface->NotifyUObjectCreated(Object, Index);
                         }
                     }
                 }
-#endif
-            }         
+            }
         }
     }
 }
@@ -350,7 +342,8 @@ void FPuertsModule::NotifyUObjectDeleted(const class UObjectBase* InObject, int3
         IAutoBindInterface* RawInterface = Cast<IAutoBindInterface>(GGameInstance);
         if (RawInterface)
         {
-            RawInterface->NotifyUObjectDeleted(InObject, Index);
+            UObject* Object = (UObject*)InObject;
+            RawInterface->NotifyUObjectDeleted(Object, Index);
         }
     }
 }

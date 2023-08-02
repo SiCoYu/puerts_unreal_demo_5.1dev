@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 globalThis["UE"] = require("ue");
 globalThis["CPP"] = require("cpp");
+const UE = require("ue");
 const puerts_1 = require("puerts");
 const TSRegister_1 = require("./Game/TSRegister");
 const TSAutoBindActor_1 = require("./Game/TSAutoBindActor");
@@ -24,4 +25,15 @@ function _UnMixin(TSClassName) {
 xContext.CallMixinFromCPP.Bind(_Mixin);
 xContext.CallUnMixinFromCPP.Bind(_UnMixin);
 console.log("[AutoMixinTest End]");
+let gameInstance = puerts_1.argv.getByName("GameInstance");
+puerts_1.blueprint.load(UE.Game.BP_AutoBindActor.BP_AutoBindActor_C);
+const BP_AutoBindActor_C = UE.Game.BP_AutoBindActor.BP_AutoBindActor_C; //别名
+let tsAutoBindActor = UE.GameplayStatics.BeginDeferredActorSpawnFromClass(gameInstance, BP_AutoBindActor_C.StaticClass(), undefined, UE.ESpawnActorCollisionHandlingMethod.Undefined);
+UE.GameplayStatics.FinishSpawningActor(tsAutoBindActor, undefined);
+if (tsAutoBindActor) {
+    tsAutoBindActor.SetActorHiddenInGame(false);
+    tsAutoBindActor.OnCreate(12345);
+}
+//如果确定后续不需要使用TestBlueprint_C了，应该unload节省内存
+puerts_1.blueprint.unload(BP_AutoBindActor_C);
 //# sourceMappingURL=AutoMixinTest.js.map

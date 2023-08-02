@@ -25,9 +25,9 @@ public:
 
     virtual void Shutdown() override;
     
-	void NotifyUObjectCreated(const UObjectBase* InObjectBase, int32 Index) override;
+	void NotifyUObjectCreated(UObject* InObjectBase, int32 Index) override;
 
-	void NotifyUObjectDeleted(const UObjectBase* InObjectBase, int32 Index) override;
+	void NotifyUObjectDeleted(UObject* InObjectBase, int32 Index) override;
 private:
     TSharedPtr<puerts::FJsEnv> GameScript;
     class UXContext* RuntimeContext;
