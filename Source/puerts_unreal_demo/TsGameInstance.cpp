@@ -25,7 +25,7 @@ void UTsGameInstance::OnStart()
     }    
 	UE_LOG(LogTemp, Log, TEXT("TsGameInstance OnStart"));
     Arguments.Add(TPair<FString, UObject*>{TEXT("Context"), RuntimeContext });
-    GameScript->Start("AutoMixinTest", Arguments);
+    GameScript->Start("UsingMixin", Arguments);
 }
 
 
@@ -36,7 +36,8 @@ void UTsGameInstance::Shutdown()
 }
 
 void UTsGameInstance::NotifyUObjectCreated(UObject* InObject, int32 Index)
-{  
+{
+	UE_LOG(LogTemp, Log, TEXT("[Created] InObjectPtr = %p"), InObject);
 	const auto Class = InObject->IsA<UClass>() ? static_cast<UClass*>(InObject) : InObject->GetClass();
 	if (Class->HasAnyClassFlags(CLASS_NewerVersionExists))
 	{

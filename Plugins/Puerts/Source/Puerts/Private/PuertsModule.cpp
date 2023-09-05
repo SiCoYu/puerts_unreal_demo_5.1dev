@@ -288,19 +288,23 @@ void FPuertsModule::NotifyUObjectCreated(const class UObjectBase* InObject, int3
     }
     if (InObject && JsEnv.IsValid()) 
     {
+        UE_LOG(PuertsModule, Warning, TEXT("NotifyUObjectCreated, %p"), InObject);
         UObject* Object = (UObject*)InObject;
         if (Object == nullptr || Object->IsA<UGameInstance>())
         {
             return;
         }
-		const auto Class = Object->IsA<UClass>() ? static_cast<UClass*>(Object) : Object->GetClass();
-		if (Class->HasAnyClassFlags(CLASS_NewerVersionExists))
-		{
-			return;
-		}
+        const auto Class = Object->IsA<UClass>() ? static_cast<UClass*>(Object) : Object->GetClass();
+        if (Class->HasAnyClassFlags(CLASS_NewerVersionExists))
+        {
+            return;
+        }
         if (IsValid(Class))
         {
-            UE_LOG(LogTemp, Log, TEXT("[Created] ClassName = %s, ClassPtr = %p, InObjectPtr = %p"), *(Class->GetName()), Class, InObject);
+            int32 InternalIndex = Class->GetUniqueID();
+            int32 ObjLastNonGCIndex = GUObjectArray.GetObjectArrayNumPermanent();
+            UE_LOG(PuertsModule, Log, TEXT("[Created] ClassName = %s, InternalIndex = %d, ObjLastNonGCIndex = %d"), *Class->GetName(), InternalIndex, ObjLastNonGCIndex);
+            UE_LOG(PuertsModule, Log, TEXT("[Created] ObjectName = %s, InObjectPtr = %p, ClassName = %s, ClassPtr = %p"), *Object->GetName(), Object, *Class->GetName(), Class);
         }
 		static UClass* InterfaceClass = UAutoBindInterface::StaticClass();
 		const bool bImplUnluaInterface = Class->ImplementsInterface(InterfaceClass);
@@ -333,7 +337,7 @@ void FPuertsModule::NotifyUObjectCreated(const class UObjectBase* InObject, int3
 
 void FPuertsModule::NotifyUObjectDeleted(const class UObjectBase* InObject, int32 Index)
 {
-    // UE_LOG(PuertsModule, Warning, TEXT("NotifyUObjectDeleted, %p"), InObject);
+    UE_LOG(PuertsModule, Warning, TEXT("NotifyUObjectDeleted, %p"), InObject);
 #if WITH_EDITOR
     return;
 #endif
