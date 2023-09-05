@@ -1,5 +1,6 @@
 import * as UE from 'ue'
 import {argv, blueprint} from 'puerts';
+import { TSPuertsMixinTool } from "./TSPuertsMixinTool";
 
 //-----------------------------------------------------------------
 //基础演示
@@ -115,3 +116,14 @@ obj.Mult(1, 2);
 obj.Div(4, 5);
 console.log('after mixin end....')
 
+//开启MixinTool
+console.log('before PuertsMixinTool....')
+let cpp_mixin_tool = UE.PuertsMixinTool.GetInstance();
+blueprint.mixin(UE.PuertsMixinTool, TSPuertsMixinTool);        
+let m_mixin_tool = cpp_mixin_tool as TSPuertsMixinTool;
+m_mixin_tool.Initialize();
+console.log('after PuertsMixinTool....');
+
+(gameInstance as UE.TypeScriptGameInstance).ShutdownNotify.Bind(() => {
+    m_mixin_tool.Deinitialize();
+});

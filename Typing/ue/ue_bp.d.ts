@@ -6,22 +6,6 @@ declare module "ue" {
 
     import * as UE from "ue"
 
-// __TYPE_DECL_START: F49654174DF11A670C542687CFE20F02
-    namespace Game.BP_AutoBindActor {
-        class BP_AutoBindActor_C extends UE.Actor {
-            constructor(Outer?: Object, Name?: string, ObjectFlags?: number);
-            DefaultSceneRoot: UE.SceneComponent;
-            GetTSModuleName() : string;
-            static StaticClass(): Class;
-            static Find(OrigInName: string, Outer?: Object): BP_AutoBindActor_C;
-            static Load(InName: string): BP_AutoBindActor_C;
-        
-            __tid_BP_AutoBindActor_C_0__: boolean;
-        }
-        
-    }
-
-// __TYPE_DECL_END
 // __TYPE_DECL_START: C58A3A0E40D89448FD8D8EAD08684AB7
     namespace Game.BP_StoryTrigger {
         class BP_StoryTrigger_C extends UE.Actor {
@@ -62,6 +46,22 @@ declare module "ue" {
             static Load(InName: string): BP_ManualBindActor_C;
         
             __tid_BP_ManualBindActor_C_0__: boolean;
+        }
+        
+    }
+
+// __TYPE_DECL_END
+// __TYPE_DECL_START: F49654174DF11A670C542687CFE20F02
+    namespace Game.BP_AutoBindActor {
+        class BP_AutoBindActor_C extends UE.Actor {
+            constructor(Outer?: Object, Name?: string, ObjectFlags?: number);
+            DefaultSceneRoot: UE.SceneComponent;
+            GetTSModuleName() : string;
+            static StaticClass(): Class;
+            static Find(OrigInName: string, Outer?: Object): BP_AutoBindActor_C;
+            static Load(InName: string): BP_AutoBindActor_C;
+        
+            __tid_BP_AutoBindActor_C_0__: boolean;
         }
         
     }

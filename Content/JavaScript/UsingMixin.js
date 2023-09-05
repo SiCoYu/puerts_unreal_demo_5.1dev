@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const UE = require("ue");
 const puerts_1 = require("puerts");
+const TSPuertsMixinTool_1 = require("./TSPuertsMixinTool");
 //-----------------------------------------------------------------
 //基础演示
 //-----------------------------------------------------------------
@@ -77,4 +78,14 @@ console.log('after mixin start....');
 obj.Mult(1, 2);
 obj.Div(4, 5);
 console.log('after mixin end....');
+//开启MixinTool
+console.log('before PuertsMixinTool....');
+let cpp_mixin_tool = UE.PuertsMixinTool.GetInstance();
+puerts_1.blueprint.mixin(UE.PuertsMixinTool, TSPuertsMixinTool_1.TSPuertsMixinTool);
+let m_mixin_tool = cpp_mixin_tool;
+m_mixin_tool.Initialize();
+console.log('after PuertsMixinTool....');
+gameInstance.ShutdownNotify.Bind(() => {
+    m_mixin_tool.Deinitialize();
+});
 //# sourceMappingURL=UsingMixin.js.map
